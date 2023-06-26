@@ -363,7 +363,7 @@ def visualise_strategy_returns_plotly(df, moving_avg, ticker_Name):
     fig.add_trace(go.Scatter(x=df.index, y=df['strat_portf'], name='Strategy portfolio'), row=5, col=1)
 
     # Update layout
-    fig.update_layout(title='Interactive charts', height=3000, width=1500, showlegend=True)
+    fig.update_layout(height=3000, width=1500, showlegend=True)
 
     return fig
 
