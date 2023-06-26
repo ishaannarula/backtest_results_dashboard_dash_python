@@ -10,9 +10,8 @@ hv.extension('bokeh')
 
 import warnings
 warnings.filterwarnings('ignore')
-
 import datetime as dt
-import backtest_functions as btfunc
+from backtest import backtest_functions as btfunc
 
 # Run the backtesting pipeline
 
@@ -75,7 +74,6 @@ ticker = [
                       required=True,
                       style={'font-size': '14px'}
             ),
-
         ],
         style={'margin-bottom': '15px'}
     )
@@ -368,8 +366,23 @@ dfDashb252d = dbc.Col(
                     data=performStat252d.to_dict('records'),
                     export_format='csv',
                     export_headers='display',
-                    style_table={'width': '100%'},
-                    style_cell={'textAlign': 'center'}
+
+                    # Formatting options
+                    style_cell={
+                        'fontFamily': 'Arial, sans-serif',
+                        'fontSize': '14px',
+                        'padding': '8px',
+                        'textAlign': 'center'
+                    },
+                    style_header={
+                        'fontWeight': 'bold',
+                        'textAlign': 'center'
+                    },
+                    style_data_conditional=[
+                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'},
+                        {'if': {'row_index': 'even'}, 'backgroundColor': 'white'},
+                    ],
+                    style_as_list_view=True
                 )
             ]
         )
@@ -396,8 +409,23 @@ dfDashbAnn = dbc.Col(
                     data=performStatAnn.to_dict('records'),
                     export_format='csv',
                     export_headers='display',
-                    style_table={'width': '100%'},
-                    style_cell={'textAlign': 'center'}
+
+                    # Formatting options
+                    style_cell={
+                        'fontFamily': 'Arial, sans-serif',
+                        'fontSize': '14px',
+                        'padding': '8px',
+                        'textAlign': 'center'
+                    },
+                    style_header={
+                        'fontWeight': 'bold',
+                        'textAlign': 'center'
+                    },
+                    style_data_conditional=[
+                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'},
+                        {'if': {'row_index': 'even'}, 'backgroundColor': 'white'},
+                    ],
+                    style_as_list_view=True
                 )
             ]
         )
@@ -424,8 +452,23 @@ dfDashbCagr = dbc.Col(
                     data=performStatCagr.to_dict('records'),
                     export_format='csv',
                     export_headers='display',
-                    style_table={'width': '100%'},
-                    style_cell={'textAlign': 'center'}
+
+                    # Formatting options
+                    style_cell={
+                        'fontFamily': 'Arial, sans-serif',
+                        'fontSize': '14px',
+                        'padding': '8px',
+                        'textAlign': 'center'
+                    },
+                    style_header={
+                        'fontWeight': 'bold',
+                        'textAlign': 'center'
+                    },
+                    style_data_conditional=[
+                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'},
+                        {'if': {'row_index': 'even'}, 'backgroundColor': 'white'},
+                    ],
+                    style_as_list_view=True
                 )
             ]
         )
@@ -436,8 +479,13 @@ performStatTab = [
     dbc.Tab(
         [
             dbc.Row(
-                [dfDashb252d, dfDashbAnn, dfDashbCagr],
-                style={'margin-bottom': '20px'}
+                dfDashb252d, style={'margin-bottom': '20px'}
+            ),
+            dbc.Row(
+                dfDashbAnn, style={'margin-bottom': '20px'}
+            ),
+            dbc.Row(
+                dfDashbCagr, style={'margin-bottom': '20px'}
             ),
         ],
         label='Performance statistics',

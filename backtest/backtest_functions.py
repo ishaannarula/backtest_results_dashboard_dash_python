@@ -340,30 +340,85 @@ def visualise_strategy_returns(df, price_type, moving_avg):
 
 def visualise_strategy_returns_plotly(df, moving_avg, ticker_Name):
     # Create subplots
-    fig = make_subplots(rows=5, cols=1)
+    fig = make_subplots(
+        rows=5, cols=1,
+        subplot_titles=(
+            'Closing price and its moving average',
+            'MACD and the 9-day EMA of the MACD',
+            'Strategy exposure',
+            'Daily log returns',
+            'Portfolio evolution'
+        ),
+        vertical_spacing=0.02,
+        shared_xaxes=True
+    )
 
     # Add traces to each subplot
     # Subplot 1
-    fig.add_trace(go.Scatter(x=df.index, y=df['close'], name=str(ticker_Name) + ' close'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=df.index, y=df['close_sma'], name='Moving average'), row=1, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['close'], name=str(ticker_Name) + ' close', legendgroup='1'),
+        row=1, col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['close_sma'], name='Moving average', legendgroup='1'),
+        row=1, col=1
+    )
 
     # Subplot 2
-    fig.add_trace(go.Scatter(x=df.index, y=df['macd_12,26'], name='MACD = 12-day EMA - 26-day EMA'), row=2, col=1)
-    fig.add_trace(go.Scatter(x=df.index, y=df['macd_ema9'], name='9-day EMA of MACD'), row=2, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['macd_12,26'], name='MACD = 12-day EMA - 26-day EMA', legendgroup='2'),
+        row=2, col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['macd_ema9'], name='9-day EMA of MACD', legendgroup='2'),
+        row=2, col=1
+    )
 
     # Subplot 3
-    fig.add_trace(go.Scatter(x=df.index, y=df['exposure'], name='Exposure'), row=3, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['exposure'], name='Exposure', legendgroup='3'),
+        row=3, col=1
+    )
 
     # Subplot 4
-    fig.add_trace(go.Scatter(x=df.index, y=df['index_dailyLogRet'], name='Index daily log return'), row=4, col=1)
-    fig.add_trace(go.Scatter(x=df.index, y=df['strat_dailyLogRet'], name='Strategy daily log return'), row=4, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['index_dailyLogRet'], name='Index daily log return', legendgroup='4'),
+        row=4, col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['strat_dailyLogRet'], name='Strategy daily log return', legendgroup='4'),
+        row=4, col=1
+    )
 
     # Subplot 5
-    fig.add_trace(go.Scatter(x=df.index, y=df['B&H_portf'], name='Buy and hold portfolio'), row=5, col=1)
-    fig.add_trace(go.Scatter(x=df.index, y=df['strat_portf'], name='Strategy portfolio'), row=5, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['B&H_portf'], name='Buy and hold portfolio', legendgroup='5'),
+        row=5, col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df['strat_portf'], name='Strategy portfolio', legendgroup='5'),
+        row=5, col=1
+    )
+
+    # Add subplot titles
+    fig.update_yaxes(title_text='Price', row=1, col=1)
+    fig.update_yaxes(title_text='Trading indicators', row=2, col=1)
+    fig.update_yaxes(title_text='Position', row=3, col=1)
+    fig.update_yaxes(title_text='Log return', row=4, col=1)
+    fig.update_yaxes(title_text='Capital', row=5, col=1)
 
     # Update layout
-    fig.update_layout(height=3000, width=1500, showlegend=True)
+    fig.update_layout(
+        height=3000, width=1350, legend_tracegroupgap=600,
+        xaxis_showticklabels=True,
+        xaxis2_showticklabels=True,
+        xaxis3_showticklabels=True,
+        xaxis4_showticklabels=True
+    )
 
     return fig
 
