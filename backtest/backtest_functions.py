@@ -116,7 +116,7 @@ def strategy_exposure_and_trades(df_prev, price_type, moving_avg):
     df['trade'] = df['trade'].shift(-1)
 
     df.dropna(inplace=True)
-    
+
     return df
 
 

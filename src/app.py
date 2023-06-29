@@ -609,4 +609,4 @@ def update_plot(ticker_name, start_date, end_date, sma):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8050, use_reloader=False)
+    app.run_server(debug=False, port=8050, use_reloader=False)
