@@ -110,13 +110,13 @@ def strategy_exposure_and_trades(df_prev, price_type, moving_avg):
     if price_type == 'close':
         df['exposure'] = df['exposure'].shift(1)
 
-    df.dropna(inplace=True)
-
     df['trade'] = df['exposure'] - df['exposure'].shift(1)
 
-    # if not df.empty:
-    df['trade'].iloc[0] = df['exposure'].iloc[0]
+    # To make sure that we execute the trade on day i, following which the exposure gets revised on day (i+1)
+    df['trade'] = df['trade'].shift(-1)
 
+    df.dropna(inplace=True)
+    
     return df
 
 
