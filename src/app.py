@@ -16,7 +16,10 @@ from backtest import backtest_functions as btfunc
 # Run the backtesting pipeline
 
 # Create dataframes
-ticker = 'TQQQ'
+initTicker = 'BTC-USD'
+initSma = 50
+initStartingCapital = 100000
+
 
 (
     tickerClose_dataClean,
@@ -25,13 +28,14 @@ ticker = 'TQQQ'
     tickerClose_retsDaily,
     tickerClose_rets252d,
     tickerClose_retsAnn,
-    tickerClose_trades
-) = btfunc.long_long_short_short_back_test(
-    add_ticker=ticker,
+    # tickerClose_trades
+) = btfunc.long_ma_short_short_back_test(
+    add_ticker=initTicker,
     price_for_analysis='close',
     bt_start=dt.datetime(2014, 1, 1),
     bt_end=dt.datetime(2021, 12, 31),
-    sma_number=200
+    sma_number=initSma,
+    starting_capital=initStartingCapital
 )
 
 # Calculate performance statistics
@@ -39,17 +43,17 @@ ticker = 'TQQQ'
     performStat252d,
     performStatAnn,
     performStatCagr,
-    trades_df
+    # trades_df
 ) = btfunc.results(
     rets_daily=tickerClose_retsDaily,
     rets_252d=tickerClose_rets252d,
     rets_annual=tickerClose_retsAnn,
-    trades_df=tickerClose_trades
+    # trades_df=tickerClose_trades
 
 )
 
 # Create Plotly charts
-fig = btfunc.visualise_strategy_returns_plotly(df=tickerClose_retsDaily, moving_avg=200, ticker_Name=ticker)
+fig = btfunc.visualise_strategy_returns_plotly(df=tickerClose_retsDaily, ticker_Name=initTicker)
 
 # Create the Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -70,7 +74,7 @@ ticker = [
                       type='text',
                       debounce=True,
                       placeholder='Enter ticker...',
-                      value=ticker,
+                      value=initTicker,
                       required=True,
                       style={'font-size': '14px'}
             ),
@@ -131,7 +135,7 @@ movingAvg = [
                       type='number',
                       debounce=True,
                       placeholder='Enter a moving avg. number...',
-                      value=200,
+                      value=initSma,
                       min=1,
                       max=500,
                       step=1
@@ -297,53 +301,53 @@ annRetsTab = [
 ]
 
 # Yearly trades tab
-tradesTab = [
-    dbc.Tab(
-        [
-            # html.H4('Yearly trades', style={'margin-top': '20px'}),
-            dash_table.DataTable(
-                id='dfDashbTrades',
-                columns=[
-                    {
-                        'name': i,
-                        'id': i,
-                    }
-
-                    for i in trades_df.columns
-                ],
-                data=trades_df.to_dict('records'),
-                export_format='csv',
-                export_headers='display',
-
-                # Formatting options
-                filter_action='native',
-                sort_action='native',
-                sort_mode='multi',
-                column_selectable='multi',
-                row_selectable='multi',
-                page_action='native',
-                style_cell={
-                    'fontFamily': 'Arial, sans-serif',
-                    'fontSize': '14px',
-                    'padding': '8px',
-                    'textAlign': 'center'
-                },
-                style_header={
-                    'fontWeight': 'bold',
-                    'textAlign': 'center'
-                },
-                style_data_conditional=[
-                    {'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'},
-                    {'if': {'row_index': 'even'}, 'backgroundColor': 'white'},
-                    {'if': {'column_id': 'year'}, 'textAlign': 'center', 'fontWeight': 'bold'}
-                ],
-                style_as_list_view=True
-            )
-        ],
-        label='Yearly trades',
-        tab_style={'margin-left': 'auto', 'margin-right': 'auto'}
-    )
-]
+# tradesTab = [
+#     dbc.Tab(
+#         [
+#             # html.H4('Yearly trades', style={'margin-top': '20px'}),
+#             dash_table.DataTable(
+#                 id='dfDashbTrades',
+#                 columns=[
+#                     {
+#                         'name': i,
+#                         'id': i,
+#                     }
+#
+#                     for i in trades_df.columns
+#                 ],
+#                 data=trades_df.to_dict('records'),
+#                 export_format='csv',
+#                 export_headers='display',
+#
+#                 # Formatting options
+#                 filter_action='native',
+#                 sort_action='native',
+#                 sort_mode='multi',
+#                 column_selectable='multi',
+#                 row_selectable='multi',
+#                 page_action='native',
+#                 style_cell={
+#                     'fontFamily': 'Arial, sans-serif',
+#                     'fontSize': '14px',
+#                     'padding': '8px',
+#                     'textAlign': 'center'
+#                 },
+#                 style_header={
+#                     'fontWeight': 'bold',
+#                     'textAlign': 'center'
+#                 },
+#                 style_data_conditional=[
+#                     {'if': {'row_index': 'odd'}, 'backgroundColor': 'rgb(248, 248, 248)'},
+#                     {'if': {'row_index': 'even'}, 'backgroundColor': 'white'},
+#                     {'if': {'column_id': 'year'}, 'textAlign': 'center', 'fontWeight': 'bold'}
+#                 ],
+#                 style_as_list_view=True
+#             )
+#         ],
+#         label='Yearly trades',
+#         tab_style={'margin-left': 'auto', 'margin-right': 'auto'}
+#     )
+# ]
 
 # Performance statistics tab
 dfDashb252d = dbc.Col(
@@ -499,7 +503,7 @@ app.layout = dbc.Container(
         # Dashboard title
         dbc.Row(
             html.H1(
-                'Long long short short backtest',
+                'Long Moving Average Short Short Backtest',
                 style={'font-size': '32px',
                        'margin-bottom': '20px',
                        'text-align': 'center'
@@ -526,7 +530,7 @@ app.layout = dbc.Container(
                 # Dashboard tabs
                 dbc.Col(
                     dbc.Tabs(
-                        chartsTab + resultsdfTab + roll252dRetsTab + annRetsTab + tradesTab + performStatTab,
+                        chartsTab + resultsdfTab + roll252dRetsTab + annRetsTab + performStatTab, #+ tradesTab
                         id='tabs',
                         active_tab='my_graph',
                         # style={'height': '100%',
@@ -545,15 +549,6 @@ app.layout = dbc.Container(
     fluid=True
 )
 
-        # dbc.Row(
-        #     dbc.Col(
-        #         html.Div(
-        #             id='data-container',
-        #             style={'max_height': '500px', 'overflow-y': 'auto'}
-        #         )
-        #     )
-        # )
-
 # Define the callback function to update the plot
 @app.callback(
     Output('my_graph', 'figure'),
@@ -561,7 +556,7 @@ app.layout = dbc.Container(
     Output('resdfDashb252d', 'data'),
     Output('resdfDashbAnn', 'data'),
     Output('resdfDashbCagr', 'data'),
-    Output('dfDashbTrades', 'data'),
+    # Output('dfDashbTrades', 'data'),
     Output('dfDashb252d', 'data'),
     Output('dfDashbAnn', 'data'),
     Input('ticker', 'value'),
@@ -580,32 +575,33 @@ def update_plot(ticker_name, start_date, end_date, sma):
         tickerClose_retsDaily_filt,
         rets252dUpdated,
         retsAnnUpdated,
-        tradesUpdated
-    ) = btfunc.long_long_short_short_back_test(
+        # tradesUpdated
+    ) = btfunc.long_ma_short_short_back_test(
         add_ticker=ticker_name,
         price_for_analysis='close',
         bt_start=start_date,
         bt_end=end_date,
-        sma_number=sma
+        sma_number=sma,
+        starting_capital=initStartingCapital
     )
 
     # Update the Plotly plot
-    figUpdated = btfunc.visualise_strategy_returns_plotly(df=tickerClose_retsDaily_filt, moving_avg=sma, ticker_Name=ticker_name)
+    figUpdated = btfunc.visualise_strategy_returns_plotly(df=tickerClose_retsDaily_filt, ticker_Name=ticker_name)
 
     # Update performance statistics
     (
         performStat252dUpdated,
         performStatAnnUpdated,
         performStatCagrUpdated,
-        trades_dfUpdated
+        # trades_dfUpdated
     ) = btfunc.results(
         rets_daily=tickerClose_retsDaily_filt,
         rets_252d=rets252dUpdated,
         rets_annual=retsAnnUpdated,
-        trades_df=tradesUpdated
+        # trades_df=tradesUpdated
     )
 
-    return figUpdated, tickerClose_retsDaily_filt.to_dict('records'), performStat252dUpdated.to_dict('records'), performStatAnnUpdated.to_dict('records'), performStatCagrUpdated.to_dict('records'), trades_dfUpdated.to_dict('records'), rets252dUpdated.to_dict('records'), retsAnnUpdated.to_dict('records')
+    return figUpdated, tickerClose_retsDaily_filt.to_dict('records'), performStat252dUpdated.to_dict('records'), performStatAnnUpdated.to_dict('records'), performStatCagrUpdated.to_dict('records'), rets252dUpdated.to_dict('records'), retsAnnUpdated.to_dict('records') # , trades_dfUpdated.to_dict('records')
 
 # Run the app
 if __name__ == '__main__':
