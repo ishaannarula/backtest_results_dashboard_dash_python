@@ -11,9 +11,9 @@ hv.extension('bokeh')
 import warnings
 warnings.filterwarnings('ignore')
 import datetime as dt
-import os
-os.chdir('/Users/ishaan/Library/CloudStorage/GoogleDrive-ishaan.narula1@gmail.com/My Drive/Personal Development/GitHub/backtest_results_dashboard_dash_python')
-from backtest import backtest_functions as btfunc
+# import os
+# os.chdir('/Users/ishaan/Library/CloudStorage/GoogleDrive-ishaan.narula1@gmail.com/My Drive/Personal Development/GitHub/backtest_results_dashboard_dash_python')
+import backtest_functions as btfunc
 
 
 # Run the backtesting pipeline
