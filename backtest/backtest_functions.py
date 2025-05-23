@@ -13,7 +13,9 @@ warnings.filterwarnings('ignore')
 
 
 def import_and_clean_data(ticker, price_types):
+    # price_types = ['Close', 'Open']
     series = yf.download(ticker, interval='1d')[price_types]
+    series.columns = ['Close', 'Open']
 
     df = pd.DataFrame({'open': series['Open'],
                        'close': series['Close']})  # modify code here to accept only open or only close prices as well

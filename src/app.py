@@ -11,12 +11,15 @@ hv.extension('bokeh')
 import warnings
 warnings.filterwarnings('ignore')
 import datetime as dt
+import os
+os.chdir('/Users/ishaan/Library/CloudStorage/GoogleDrive-ishaan.narula1@gmail.com/My Drive/Personal Development/GitHub/backtest_results_dashboard_dash_python')
 from backtest import backtest_functions as btfunc
+
 
 # Run the backtesting pipeline
 
 # Create dataframes
-initTicker = 'BTC-USD'
+initTicker = 'QQQ'
 initSma = 50
 initStartingCapital = 100000
 
@@ -605,4 +608,5 @@ def update_plot(ticker_name, start_date, end_date, sma):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8050, use_reloader=False)
+    app.run(debug=False, port=8050, use_reloader=False)
+    
