@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import holoviews as hv
+from curl_cffi import requests
+# import holoviews as hv
 import warnings
 import plotly.graph_objects as go
-hv.extension('bokeh')
+# hv.extension('bokeh')
 
-from bokeh.models import HoverTool
+# from bokeh.models import HoverTool
 from plotly.subplots import make_subplots
 warnings.filterwarnings('ignore')
 
@@ -14,7 +15,8 @@ warnings.filterwarnings('ignore')
 
 def import_and_clean_data(ticker, price_types):
     # price_types = ['Close', 'Open']
-    series = yf.download(ticker, interval='1d')[price_types]
+    session = requests.Session(impersonate="chrome")
+    series = yf.download(ticker, interval='1d', session=session)[price_types]
     series.columns = ['Close', 'Open']
 
     df = pd.DataFrame({'open': series['Open'],

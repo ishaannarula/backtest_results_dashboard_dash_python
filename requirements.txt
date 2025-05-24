@@ -1,13 +1,10 @@
 setuptools>=65.5.1
 packaging==21.3
-bokeh>=3.4.0,<3.5.0
-panel==1.4.5
-holoviews==1.18.1
 dash==2.10.2
 dash-bootstrap-components==1.4.1
 numpy==1.24.3
 pandas==2.0.2
 plotly==5.14.1
-yfinance==0.2.20
+yfinance==0.2.54
 gunicorn
 dash-tools==1.12.0

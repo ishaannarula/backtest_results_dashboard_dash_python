@@ -5,8 +5,8 @@ from dash import dash_table
 import dash_bootstrap_components as dbc
 from dash.dash_table.Format import Format, Scheme
 
-import holoviews as hv
-hv.extension('bokeh')
+# import holoviews as hv
+# hv.extension('bokeh')
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -19,7 +19,7 @@ import backtest_functions as btfunc
 # Run the backtesting pipeline
 
 # Create dataframes
-initTicker = 'QQQ'
+initTicker = 'TQQQ'
 initSma = 50
 initStartingCapital = 100000
 
