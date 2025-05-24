@@ -8,3 +8,4 @@ plotly==5.14.1
 yfinance==0.2.54
 gunicorn
 dash-tools==1.12.0
+curl_cffi
