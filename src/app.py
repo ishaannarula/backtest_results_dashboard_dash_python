@@ -19,7 +19,7 @@ import backtest_functions as btfunc
 # Run the backtesting pipeline
 
 # Create dataframes
-initTicker = 'TQQQ'
+initTicker = 'QQQ'
 initSma = 50
 initStartingCapital = 100000
 
@@ -36,7 +36,7 @@ initStartingCapital = 100000
     add_ticker=initTicker,
     price_for_analysis='close',
     bt_start=dt.datetime(2014, 1, 1),
-    bt_end=dt.datetime(2021, 12, 31),
+    bt_end=dt.datetime(2025, 5, 20),
     sma_number=initSma,
     starting_capital=initStartingCapital
 )

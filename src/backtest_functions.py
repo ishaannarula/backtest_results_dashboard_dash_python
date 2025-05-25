@@ -1,8 +1,14 @@
 import pandas as pd
 import numpy as np
-import yfinance as yf
-from curl_cffi import requests
+
+# import yfinance as yf
+# from curl_cffi import requests
 # import holoviews as hv
+# import yahooquery as yq
+
+from polygon import RESTClient
+# from polygon.exceptions import NoResultsError
+import datetime
 import warnings
 import plotly.graph_objects as go
 # hv.extension('bokeh')
@@ -12,16 +18,32 @@ from plotly.subplots import make_subplots
 warnings.filterwarnings('ignore')
 
 
-
-def import_and_clean_data(ticker, price_types):
+def import_and_clean_data(ticker):
     # price_types = ['Close', 'Open']
-    session = requests.Session(impersonate="chrome")
-    series = yf.download(ticker, interval='1d', session=session)[price_types]
-    series.columns = ['Close', 'Open']
+    # session = requests.Session(impersonate="chrome")
+    # df = yf.download(["AAPL", 'MSFT'], interval='1d')#, session=session, threads=False)#[price_types]
+    # df = yf.Ticker(ticker).history(interval='1d')#[price_types]
+    # df = yq.Ticker(ticker).history(period='max', interval='1d')
 
-    df = pd.DataFrame({'open': series['Open'],
-                       'close': series['Close']})  # modify code here to accept only open or only close prices as well
+    # Replace with your actual Polygon.io API key
+    API_KEY = "yLlud2VF9zIM2aAkSJAa4qsIhYB855NG"
 
+    # Initialize the REST client
+    client = RESTClient(api_key=API_KEY)
+
+    resp = client.get_aggs(ticker=ticker, multiplier=1, timespan="day", from_="1980-01-01", to="2024-12-31", adjusted=True, sort="asc")
+    data = []
+    for bar in resp:
+        data.append({
+            'date': datetime.datetime.fromtimestamp(bar.timestamp / 1000).strftime('%Y-%m-%d'),
+            'close': bar.close, # Using the 'close' price
+            'open': bar.open,
+        })
+    df = pd.DataFrame(data)
+
+    # df.reset_index(inplace=True)
+    df = df[['date', 'open', 'close']].set_index('date')
+    
     print('Total no. of rows in the original dataframe:', len(df))
     print('')
 
@@ -46,7 +68,7 @@ def import_and_clean_data(ticker, price_types):
     print('No. of rows in cleaned dataframe:', len(dfclean))
     print('')
 
-    # print('Clean dataframe:')
+    print('Clean dataframe:')
 
     return dfclean
 
@@ -364,7 +386,7 @@ def compounded_annual_growth_rate(df):
 def long_ma_short_short_back_test(add_ticker, price_for_analysis, bt_start, bt_end, sma_number, starting_capital):
     # Data cleaning
     print('DATA CLEANING:')
-    dataClean = import_and_clean_data(ticker=add_ticker, price_types=['Open', 'Close'])
+    dataClean = import_and_clean_data(ticker=add_ticker)#, price_types=['Open', 'Close'])
     print('')
 
     # Trading indicators
